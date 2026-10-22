@@ -1,0 +1,92 @@
+{
+  "name": "@soccalytics/api",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "api",
+    "tags": [
+      "type:app",
+      "scope:backend"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "apps/api/dist",
+          "format": [
+            "esm"
+          ],
+          "bundle": true,
+          "thirdParty": false,
+          "main": "apps/api/src/main.ts",
+          "additionalEntryPoints": [],
+          "tsConfig": "apps/api/tsconfig.app.json",
+          "generatePackageJson": true,
+          "esbuildOptions": {
+            "sourcemap": true,
+            "conditions": [
+              "@soccalytics/source"
+            ],
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "conditions": [
+                "@soccalytics/source"
+              ],
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "dev": {
+        "continuous": true,
+        "command": "tsx watch --conditions=@soccalytics/source --env-file-if-exists=../../.env src/main.ts",
+        "options": {
+          "cwd": "apps/api"
+        }
+      },
+      "start": {
+        "command": "node --env-file-if-exists=../../.env dist/main.js",
+        "options": {
+          "cwd": "apps/api"
+        },
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "fastify": "^5",
+    "@fastify/sensible": "~6.0.2",
+    "@soccalytics/contracts": "workspace:*",
+    "@soccalytics/analytics": "workspace:*",
+    "@soccalytics/db": "workspace:*",
+    "@soccalytics/ai": "workspace:*",
+    "@soccalytics/platform": "workspace:*",
+    "bullmq": "^6.3.12",
+    "ioredis": "^6.0.0",
+    "zod": "^4.6.5",
+    "@aws-sdk/client-s3": "^3.1149.0",
+    "@fastify/cors": "^11.3.1",
+    "@fastify/rate-limit": "^11.2.1",
+    "@fastify/swagger": "^9.9.2",
+    "@fastify/swagger-ui": "^6.1.2",
+    "fastify-type-provider-zod": "^7.0.0"
+  },
+  "type": "module"
+}

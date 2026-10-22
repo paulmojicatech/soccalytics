@@ -1,0 +1,14 @@
+packages:
+  - 'apps/*'
+  - 'libs/*'
+  - 'packages/*'
+
+allowBuilds:
+  '@swc/core': true
+  nx: true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  '@parcel/watcher': true
+  msgpackr-extract: true
+  protobufjs: false

@@ -1,0 +1,41 @@
+{
+  "name": "@soccalytics/ai",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@soccalytics/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "name": "ai",
+    "targets": {
+      "eval": {
+        "command": "tsx --conditions=@soccalytics/source --env-file-if-exists=../../.env src/evals/run.ts",
+        "options": {
+          "cwd": "libs/ai"
+        },
+        "cache": false
+      }
+    },
+    "tags": [
+      "type:ai",
+      "scope:backend"
+    ]
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@soccalytics/contracts": "workspace:*",
+    "@anthropic-ai/sdk": "^0.133.0",
+    "zod": "^4.6.5",
+    "@opentelemetry/api": "^1.9.0"
+  }
+}

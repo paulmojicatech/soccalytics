@@ -1,0 +1,11 @@
+import { defineConfig } from 'drizzle-kit';
+
+export default defineConfig({
+  dialect: 'postgresql',
+  schema: './src/lib/schema.ts',
+  out: './migrations',
+  dbCredentials: {
+    url: process.env.DATABASE_URL ?? 'postgres://soccalytics:soccalytics@localhost:5433/soccalytics',
+  },
+  strict: true,
+});

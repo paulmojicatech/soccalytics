@@ -1,0 +1,45 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "vision-worker",
+  "projectType": "application",
+  "sourceRoot": "apps/vision-worker/src",
+  "tags": ["type:app", "lang:python"],
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/vision-worker",
+        "command": "if command -v uv >/dev/null 2>&1; then uv sync --extra dev; else python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'; fi"
+      },
+      "inputs": ["{projectRoot}/pyproject.toml"],
+      "outputs": []
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "cwd": "apps/vision-worker",
+        "command": ".venv/bin/python -m vision_worker"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*.py", "{projectRoot}/tests/**/*.py", "{projectRoot}/pyproject.toml"],
+      "options": {
+        "cwd": "apps/vision-worker",
+        "command": ".venv/bin/python -m pytest"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*.py", "{projectRoot}/tests/**/*.py", "{projectRoot}/pyproject.toml"],
+      "options": {
+        "cwd": "apps/vision-worker",
+        "commands": [".venv/bin/ruff check .", ".venv/bin/ruff format --check ."],
+        "parallel": false
+      }
+    }
+  }
+}

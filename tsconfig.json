@@ -1,0 +1,35 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./libs/contracts"
+    },
+    {
+      "path": "./libs/analytics"
+    },
+    {
+      "path": "./libs/ai"
+    },
+    {
+      "path": "./libs/db"
+    },
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./apps/worker"
+    },
+    {
+      "path": "./libs/simulator"
+    },
+    {
+      "path": "./libs/platform"
+    }
+  ],
+  "compilerOptions": {}
+}

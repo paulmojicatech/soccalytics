@@ -1,0 +1,53 @@
+{
+  "name": "@soccalytics/db",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@soccalytics/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./migrations/*": "./migrations/*"
+  },
+  "nx": {
+    "name": "db",
+    "targets": {
+      "db:generate": {
+        "command": "drizzle-kit generate",
+        "options": {
+          "cwd": "libs/db"
+        }
+      },
+      "db:migrate": {
+        "command": "tsx --conditions=@soccalytics/source --env-file-if-exists=../../.env src/migrate.ts",
+        "options": {
+          "cwd": "libs/db"
+        }
+      },
+      "db:studio": {
+        "command": "drizzle-kit studio",
+        "options": {
+          "cwd": "libs/db"
+        },
+        "continuous": true
+      }
+    },
+    "tags": [
+      "type:data",
+      "scope:backend"
+    ]
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@soccalytics/contracts": "workspace:*",
+    "drizzle-orm": "^0.45.4",
+    "postgres": "^3.4.9"
+  }
+}

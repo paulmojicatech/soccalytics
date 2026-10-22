@@ -1,0 +1,56 @@
+# Local infrastructure for Soccalytics.
+#   docker compose up -d                 → postgres, redis, s3 (seaweedfs), jaeger
+#   docker compose --profile cv up -d    → also the Python vision worker
+name: soccalytics
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: soccalytics
+      POSTGRES_PASSWORD: soccalytics
+      POSTGRES_DB: soccalytics
+    ports: ['5433:5432']
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U soccalytics']
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
+    ports: ['6380:6379']
+    volumes: [redisdata:/data]
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      retries: 10
+
+  # S3-compatible object storage for video + tracking documents.
+  # The API creates the bucket on boot (see apps/api/src/app/plugins/storage.ts).
+  s3:
+    image: chrislusf/seaweedfs:latest
+    command: 'server -dir=/data -s3 -s3.port=8333 -master.volumeSizeLimitMB=1024'
+    ports: ['8333:8333']
+    volumes: [s3data:/data]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+    ports: ['16686:16686', '4318:4318']
+
+  vision-worker:
+    profiles: ['cv']
+    build: ./apps/vision-worker
+    env_file: .env
+    environment:
+      REDIS_URL: redis://redis:6379
+      S3_ENDPOINT: http://s3:8333
+    depends_on: [redis, s3]
+
+volumes:
+  pgdata:
+  redisdata:
+  s3data:
